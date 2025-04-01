@@ -3,12 +3,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IndieGameJamAPI.Data
 {
-    public class AppDbContext
+    public class AppDbContext : DbContext
     {
         public DbSet<Games> Games { get; set; }
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        public DbSet<User> User { get; set; }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+            string connection = configuration.GetConnectionString("DefaultConnection");
+            optionsBuilder.UseSqlServer(connection);
         }
     }
 }
